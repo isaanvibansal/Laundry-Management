@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Ticket #{{ '%04d'|format(order['id']) }} — MUJ Hostel Laundry{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container" style="max-width: 820px;">
+    <a href="{{ url_for('order_history') }}" class="hint">&larr; Back to my orders</a>
+
+    <div class="page-head" style="margin-top:10px;">
+      <div>
+        <div class="eyebrow-tag">Ticket #{{ '%04d'|format(order['id']) }}</div>
+        <h1>{{ SERVICE_LABELS[order['service_type']] }}</h1>
+      </div>
+      <span class="badge badge-{{ order['status'] }}" style="font-size:.85rem; padding:8px 16px;">{{ STATUS_LABELS[order['status']] }}</span>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Tracking</h3>
+        <ul class="timeline">
+          {% for s in STATUS_ORDER %}
+            {% set reached = STATUS_ORDER.index(s) <= STATUS_ORDER.index(order['status']) if order['status'] in STATUS_ORDER else false %}
+            <li class="{{ '' if reached else 'inactive' }}">
+              <div class="timeline-label">{{ STATUS_LABELS[s] }}</div>
+              {% for entry in log if entry['status'] == s %}
+                <div class="timeline-time">{{ entry['changed_at'] }}</div>
+              {% endfor %}
+            </li>
+          {% endfor %}
+          {% if order['status'] == 'cancelled' %}
+            <li><div class="timeline-label" style="color:var(--danger);">Cancelled</div></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1.05rem;">Order details</h3>
+        <div class="two-col-row"><span>Provider</span><span>{{ order['vendor_name'] if order['vendor_name'] else 'In-house laundry' }}</span></div>
+        {% if order['vendor_phone'] %}<div class="two-col-row"><span>Vendor contact</span><span>{{ order['vendor_phone'] }}</span></div>{% endif %}
+        <div class="two-col-row"><span>Pickup</span><span>{{ order['pickup_date'] }} · {{ order['pickup_slot'] }}</span></div>
+        <div class="two-col-row"><span>Weight</span><span>{{ order['weight_kg'] ~ ' kg' if order['weight_kg'] else 'Confirmed at pickup' }}</span></div>
+        <div class="two-col-row"><span>Items</span><span>{{ order['items_description'] or '—' }}</span></div>
+        {% if order['is_subscription'] %}<div class="two-col-row"><span>Subscription</span><span>{{ order['recurrence']|capitalize }}</span></div>{% endif %}
+        <div class="two-col-row"><span>Estimated cost</span><span>{{ '₹%.0f'|format(order['estimated_cost']) if order['estimated_cost'] else 'TBD' }}</span></div>
+        {% if order['notes'] %}<div class="two-col-row"><span>Notes</span><span>{{ order['notes'] }}</span></div>{% endif %}
+
+        {% if order['status'] in ['requested', 'picked_up'] %}
+        <form method="POST" action="{{ url_for('cancel_order', order_id=order['id']) }}" style="margin-top:18px;" onsubmit="return confirm('Cancel this order?');">
+          <button type="submit" class="btn btn-danger btn-block">Cancel this order</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}My Orders — MUJ Hostel Laundry{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow-tag">Order history</div>
+        <h1>All your tickets</h1>
+      </div>
+      <a href="{{ url_for('book_service') }}" class="btn btn-primary">+ Book a pickup</a>
+    </div>
+
+    <div class="filters">
+      <a href="{{ url_for('order_history', status='all') }}" class="{{ 'active' if status_filter=='all' }}">All</a>
+      {% for s in STATUS_ORDER %}
+        <a href="{{ url_for('order_history', status=s) }}" class="{{ 'active' if status_filter==s }}">{{ STATUS_LABELS[s] }}</a>
+      {% endfor %}
+    </div>
+
+    {% if orders %}
+      <div class="list-stack">
+        {% for o in orders %}
+        <a href="{{ url_for('order_detail', order_id=o['id']) }}" class="ticket" style="text-decoration:none; color:inherit;">
+          <div>
+            <div class="ticket-id">TICKET #{{ '%04d'|format(o['id']) }} · {{ o['created_at'][:10] }}</div>
+            <div class="ticket-title">{{ SERVICE_LABELS[o['service_type']] }} · {{ o['vendor_name'] if o['vendor_name'] else 'In-house laundry' }}</div>
+            <div class="ticket-meta">
+              <span>📅 {{ o['pickup_date'] }}</span>
+              <span>🕒 {{ o['pickup_slot'] }}</span>
+              {% if o['weight_kg'] %}<span>⚖️ {{ o['weight_kg'] }} kg</span>{% endif %}
+            </div>
+          </div>
+          <div class="ticket-perf">
+            <span class="badge badge-{{ o['status'] }}">{{ STATUS_LABELS[o['status']] }}</span><br>
+            {% if o['estimated_cost'] %}<span style="font-family:var(--font-mono); font-size:.85rem; color:var(--ink-soft);">₹{{ "%.0f"|format(o['estimated_cost']) }}</span>{% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card empty-state">
+        <h3>No orders here</h3>
+        <p>Try a different filter, or book a new pickup.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

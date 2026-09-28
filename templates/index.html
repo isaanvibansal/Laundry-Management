@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}MUJ Hostel Laundry — Book a Wash, Track Every Ticket{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Manipal University Jaipur · Hostel Services</div>
+    <h1>Laundry day, sorted before you finish your morning class.</h1>
+    <p class="lead">Book in-house hostel laundry or a trusted campus vendor, track every load like a claim ticket, and get a notification the moment your clothes are ready.</p>
+    <div class="hero-cta">
+      <a href="{{ url_for('register') }}" class="btn btn-primary">Book your first pickup</a>
+      <a href="{{ url_for('login') }}" class="btn btn-outline" style="background:rgba(255,255,255,.08); color:#fff; border-color:rgba(255,255,255,.4);">I already have an account</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>3</strong><span>Verified vendors near campus</span></div>
+      <div><strong>24–48h</strong><span>Average turnaround</span></div>
+      <div><strong>6</strong><span>Hostel blocks covered</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="container">
+    <div class="section-title">
+      <div class="eyebrow">How it works</div>
+      <h2>From laundry bag to claim ticket in three steps</h2>
+    </div>
+    <div class="grid grid-3">
+      <div class="card feature-card">
+        <div class="feature-num">01</div>
+        <h3>Choose your provider</h3>
+        <p>Go with the in-house hostel laundry for everyday washes, or pick an external vendor for dry cleaning and formal wear.</p>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-num">02</div>
+        <h3>Schedule a pickup</h3>
+        <p>Pick a date and time slot, describe your items, and set up a weekly subscription if you'd rather not think about it again.</p>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-num">03</div>
+        <h3>Track your ticket</h3>
+        <p>Every order gets a live status — Requested → Picked Up → In Progress → Ready → Delivered — right from your dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page" style="padding-top:0;">
+  <div class="container">
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; background:var(--teal-deep); border:none;">
+      <div>
+        <h3 style="color:#fff; margin-bottom:6px;">Running the hostel laundry desk or a vendor account?</h3>
+        <p style="color:#CDEFEA;">Admins manage in-house orders and vendors. Vendor accounts see only orders assigned to them.</p>
+      </div>
+      <a href="{{ url_for('login') }}" class="btn btn-primary">Staff / Vendor login</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Create account — MUJ Hostel Laundry{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <div class="auth-head">
+      <div class="eyebrow-tag">Student sign up</div>
+      <h2>Create your account</h2>
+    </div>
+    <form method="POST">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" required placeholder="Riya Sharma">
+      </div>
+      <div class="field">
+        <label for="email">College email</label>
+        <input type="email" id="email" name="email" required placeholder="you@muj.manipal.edu">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required minlength="4" placeholder="Minimum 4 characters">
+      </div>
+      <div class="grid" style="grid-template-columns: 1fr 1fr; gap:14px;">
+        <div class="field">
+          <label for="hostel_block">Hostel block</label>
+          <input type="text" id="hostel_block" name="hostel_block" placeholder="Yamuna Hostel">
+        </div>
+        <div class="field">
+          <label for="room_number">Room number</label>
+          <input type="text" id="room_number" name="room_number" placeholder="B-214">
+        </div>
+      </div>
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone" placeholder="98765 43210">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    </form>
+    <div class="auth-switch">
+      Already registered? <a href="{{ url_for('login') }}">Log in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

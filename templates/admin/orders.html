@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}All Orders — Admin{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow-tag">Operations</div>
+        <h1>All orders</h1>
+      </div>
+    </div>
+
+    <div class="filters">
+      <a href="{{ url_for('admin_orders', provider='all', status=status_filter) }}" class="{{ 'active' if provider_filter=='all' }}">All providers</a>
+      <a href="{{ url_for('admin_orders', provider='inhouse', status=status_filter) }}" class="{{ 'active' if provider_filter=='inhouse' }}">In-house</a>
+      <a href="{{ url_for('admin_orders', provider='vendor', status=status_filter) }}" class="{{ 'active' if provider_filter=='vendor' }}">Vendor</a>
+    </div>
+    <div class="filters">
+      <a href="{{ url_for('admin_orders', provider=provider_filter, status='all') }}" class="{{ 'active' if status_filter=='all' }}">All statuses</a>
+      {% for s in STATUS_ORDER %}
+        <a href="{{ url_for('admin_orders', provider=provider_filter, status=s) }}" class="{{ 'active' if status_filter==s }}">{{ STATUS_LABELS[s] }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="table-wrap">
+      <div class="container-inner">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticket</th><th>Student</th><th>Service</th><th>Provider</th><th>Pickup</th><th>Status</th><th>Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in orders %}
+            <tr>
+              <td class="mono">#{{ '%04d'|format(o['id']) }}</td>
+              <td>{{ o['student_name'] }}<br><span class="hint">{{ o['hostel_block'] or '' }} {{ o['room_number'] or '' }}</span></td>
+              <td>{{ SERVICE_LABELS[o['service_type']] }}</td>
+              <td>{{ o['vendor_name'] if o['vendor_name'] else 'In-house' }}</td>
+              <td>{{ o['pickup_date'] }}<br><span class="hint">{{ o['pickup_slot'] }}</span></td>
+              <td><span class="badge badge-{{ o['status'] }}">{{ STATUS_LABELS[o['status']] }}</span></td>
+              <td>
+                {% if o['status'] not in ['delivered', 'cancelled'] %}
+                <form method="POST" action="{{ url_for('update_order_status', order_id=o['id']) }}" style="display:flex; gap:6px;">
+                  <select name="status" style="padding:6px 8px; font-size:.8rem;">
+                    {% for s in STATUS_ORDER %}
+                      <option value="{{ s }}" {{ 'selected' if s==o['status'] }}>{{ STATUS_LABELS[s] }}</option>
+                    {% endfor %}
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  <button type="submit" class="btn btn-dark btn-sm">Update</button>
+                </form>
+                {% else %}
+                <span class="hint">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center; padding:40px; color:var(--ink-soft);">No orders match these filters.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

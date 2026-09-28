@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — MUJ Hostel Laundry{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow-tag">Student dashboard</div>
+        <h1>Hey {{ session['name'].split()[0] }}, here's your laundry status.</h1>
+        <p>Book a new pickup or keep an eye on what's already in the wash.</p>
+      </div>
+      <a href="{{ url_for('book_service') }}" class="btn btn-primary">+ Book a pickup</a>
+    </div>
+
+    <div class="grid grid-3" style="margin-bottom: 30px;">
+      <div class="card stat-card">
+        <div class="stat-label">Active orders</div>
+        <div class="stat-value">{{ stats.active }}</div>
+        <div class="stat-sub">Currently in progress</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Delivered</div>
+        <div class="stat-value">{{ stats.delivered }}</div>
+        <div class="stat-sub">Completed all-time</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Total spent</div>
+        <div class="stat-value">₹{{ "%.0f"|format(stats.total_spent) }}</div>
+        <div class="stat-sub">On delivered orders</div>
+      </div>
+    </div>
+
+    <div class="page-head" style="margin-bottom:16px;">
+      <h2 style="font-size:1.2rem;">Recent orders</h2>
+      <a href="{{ url_for('order_history') }}" class="btn btn-outline btn-sm">View all orders</a>
+    </div>
+
+    {% if orders %}
+      <div class="list-stack">
+        {% for o in orders %}
+        <a href="{{ url_for('order_detail', order_id=o['id']) }}" class="ticket" style="text-decoration:none; color:inherit;">
+          <div>
+            <div class="ticket-id">TICKET #{{ '%04d'|format(o['id']) }}</div>
+            <div class="ticket-title">{{ SERVICE_LABELS[o['service_type']] }} · {{ 'In-house' if o['service_provider']=='inhouse' else 'Vendor' }}</div>
+            <div class="ticket-meta">
+              <span>📅 Pickup {{ o['pickup_date'] }}</span>
+              <span>🕒 {{ o['pickup_slot'] }}</span>
+              {% if o['is_subscription'] %}<span>🔁 {{ o['recurrence']|capitalize }}</span>{% endif %}
+            </div>
+          </div>
+          <div class="ticket-perf">
+            <span class="badge badge-{{ o['status'] }}">{{ STATUS_LABELS[o['status']] }}</span><br>
+            {% if o['estimated_cost'] %}<span style="font-family:var(--font-mono); font-size:.85rem; color:var(--ink-soft);">₹{{ "%.0f"|format(o['estimated_cost']) }}</span>{% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card empty-state">
+        <h3>No orders yet</h3>
+        <p>Book your first laundry pickup — it takes less than a minute.</p>
+        <a href="{{ url_for('book_service') }}" class="btn btn-primary" style="margin-top:10px;">Book a pickup</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

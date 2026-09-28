@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — MUJ Hostel Laundry{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow-tag">Admin control desk</div>
+        <h1>Laundry operations overview</h1>
+      </div>
+      <a href="{{ url_for('admin_orders') }}" class="btn btn-primary">Manage all orders</a>
+    </div>
+
+    <div class="grid grid-3" style="grid-template-columns: repeat(4,1fr); margin-bottom:30px;">
+      <div class="card stat-card">
+        <div class="stat-label">Total orders</div>
+        <div class="stat-value">{{ stats.total_orders }}</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Active in-house</div>
+        <div class="stat-value">{{ stats.active_inhouse }}</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Delivered today</div>
+        <div class="stat-value">{{ stats.delivered_today }}</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Registered students</div>
+        <div class="stat-value">{{ stats.total_students }}</div>
+      </div>
+    </div>
+
+    <div class="page-head" style="margin-bottom:16px;">
+      <h2 style="font-size:1.2rem;">Latest tickets</h2>
+    </div>
+
+    <div class="list-stack">
+      {% for o in recent %}
+      <div class="ticket">
+        <div>
+          <div class="ticket-id">TICKET #{{ '%04d'|format(o['id']) }} · {{ o['student_name'] }} ({{ o['room_number'] or '—' }})</div>
+          <div class="ticket-title">{{ SERVICE_LABELS[o['service_type']] }} · {{ o['vendor_name'] if o['vendor_name'] else 'In-house' }}</div>
+          <div class="ticket-meta">
+            <span>📅 {{ o['pickup_date'] }}</span>
+            <span>🕒 {{ o['pickup_slot'] }}</span>
+          </div>
+        </div>
+        <div class="ticket-perf">
+          <span class="badge badge-{{ o['status'] }}">{{ STATUS_LABELS[o['status']] }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

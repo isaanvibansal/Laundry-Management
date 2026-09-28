@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MUJ Hostel Laundry{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="{{ url_for('index') }}" class="brand">
+        <span class="brand-mark">🧺</span> MUJ Laundry
+      </a>
+
+      {% set user = current_user() %}
+      <div class="nav-links">
+        {% if user %}
+          {% if user['role'] == 'student' %}
+            <a href="{{ url_for('student_dashboard') }}" class="{{ 'active' if request.endpoint == 'student_dashboard' }}">Dashboard</a>
+            <a href="{{ url_for('book_service') }}" class="{{ 'active' if request.endpoint == 'book_service' }}">Book Pickup</a>
+            <a href="{{ url_for('order_history') }}" class="{{ 'active' if request.endpoint in ['order_history','order_detail'] }}">My Orders</a>
+          {% elif user['role'] == 'admin' %}
+            <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint == 'admin_dashboard' }}">Dashboard</a>
+            <a href="{{ url_for('admin_orders') }}" class="{{ 'active' if request.endpoint == 'admin_orders' }}">All Orders</a>
+            <a href="{{ url_for('admin_vendors') }}" class="{{ 'active' if request.endpoint == 'admin_vendors' }}">Vendors</a>
+          {% elif user['role'] == 'vendor' %}
+            <a href="{{ url_for('vendor_dashboard') }}" class="{{ 'active' if request.endpoint == 'vendor_dashboard' }}">My Orders</a>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="nav-user">
+        {% if user %}
+          <span class="nav-role-badge">{{ user['role'] }}</span>
+          <span style="font-size:.88rem; font-weight:600;">{{ user['name'].split()[0] }}</span>
+          <a href="{{ url_for('logout') }}" class="btn btn-ghost btn-sm">Log out</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="btn btn-outline btn-sm">Log in</a>
+          <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">Sign up</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container" style="padding-top: 22px;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      Hostel Laundry Management System · Manipal University Jaipur · SE Lab Project
+    </div>
+  </footer>
+
+</body>
+</html>

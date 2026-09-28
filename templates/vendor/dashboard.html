@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Vendor Dashboard — MUJ Hostel Laundry{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="container">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow-tag">Vendor portal</div>
+        <h1>{{ vendor['name'] }}</h1>
+        <p>Orders routed to you from MUJ hostel students.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-3" style="margin-bottom:30px;">
+      <div class="card stat-card">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value">{{ stats.pending }}</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Delivered</div>
+        <div class="stat-value">{{ stats.delivered }}</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-label">Total assigned</div>
+        <div class="stat-value">{{ stats.total }}</div>
+      </div>
+    </div>
+
+    <div class="list-stack">
+      {% for o in orders %}
+      <div class="ticket">
+        <div>
+          <div class="ticket-id">TICKET #{{ '%04d'|format(o['id']) }} · {{ o['student_name'] }} ({{ o['hostel_block'] or '' }} {{ o['room_number'] or '' }})</div>
+          <div class="ticket-title">{{ SERVICE_LABELS[o['service_type']] }}{% if o['weight_kg'] %} · {{ o['weight_kg'] }} kg{% endif %}</div>
+          <div class="ticket-meta">
+            <span>📅 {{ o['pickup_date'] }}</span>
+            <span>🕒 {{ o['pickup_slot'] }}</span>
+            {% if o['items_description'] %}<span>👕 {{ o['items_description'] }}</span>{% endif %}
+          </div>
+        </div>
+        <div class="ticket-perf">
+          <span class="badge badge-{{ o['status'] }}" style="margin-bottom:8px; display:inline-flex;">{{ STATUS_LABELS[o['status']] }}</span>
+          {% if o['status'] not in ['delivered', 'cancelled'] %}
+          <form method="POST" action="{{ url_for('update_order_status', order_id=o['id']) }}" style="display:flex; gap:6px; margin-top:6px;">
+            <select name="status" style="padding:6px 8px; font-size:.8rem;">
+              {% for s in STATUS_ORDER %}
+                <option value="{{ s }}" {{ 'selected' if s==o['status'] }}>{{ STATUS_LABELS[s] }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-dark btn-sm">Update</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <div class="card empty-state">
+        <h3>No orders yet</h3>
+        <p>New bookings routed to your vendor account will show up here.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

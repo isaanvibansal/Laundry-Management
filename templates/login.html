@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Log in — MUJ Hostel Laundry{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <div class="auth-head">
+      <div class="eyebrow-tag">Welcome back</div>
+      <h2>Log in to your account</h2>
+    </div>
+    <form method="POST">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required placeholder="you@muj.manipal.edu">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    </form>
+    <div class="auth-switch">
+      New here? <a href="{{ url_for('register') }}">Create a student account</a>
+    </div>
+    <div class="demo-box">
+      <strong>Demo logins</strong><br>
+      Student: <code>riya.sharma@muj.manipal.edu</code> / <code>student123</code><br>
+      Admin: <code>admin@muj.manipal.edu</code> / <code>admin123</code><br>
+      Vendor: <code>vendor1@laundry.com</code> / <code>vendor123</code>
+    </div>
+  </div>
+</div>
+{% endblock %}
